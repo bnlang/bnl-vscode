@@ -1,0 +1,38 @@
+# Node build artifacts
+node_modules/**
+!node_modules/vscode-languageclient/**
+
+out/test/**
+out/test
+
+# Source and config not needed in VSIX
+src/**
+tsconfig.json
+tsconfig.*.json
+webpack.config.js
+.vscode/**
+.eslintignore
+.eslintrc.json
+.prettierrc
+.prettierignore
+*.map
+*.ts
+
+# Test files
+**/*.test.*
+**/*.spec.*
+
+# Git + CI
+.gitignore
+.gitattributes
+.github/**
+.vscode-test/**
+.vscode-test-insiders/**
+.vscode-test-web/**
+.vscode-test-web-*
+.vscode-test-remote/**
+.vscode-test-remote-*
+
+# Misc
+.vscodeignore
+*.vsix

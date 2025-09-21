@@ -1,0 +1,507 @@
+{
+  "If [Bangla]": {
+    "prefix": ["যদি"],
+    "body": ["যদি (${1:শর্ত}) {", "  ${0}", "}"],
+    "description": "If block (Bangla)"
+  },
+  "If-Else [Bangla]": {
+    "prefix": ["যদি"],
+    "body": ["যদি (${1:শর্ত}) {", "  ${2}", "} নাহলে {", "  ${0}", "}"],
+    "description": "If-Else block (Bangla)"
+  },
+  "For [Bangla]": {
+    "prefix": ["প্রতি"],
+    "body": ["প্রতি (ধরি ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++) {", "  ${0}", "}"],
+    "description": "For loop (Bangla)"
+  },
+  "For..in [Bangla]": {
+    "prefix": ["মধ্যে"],
+    "body": ["প্রতি (ধরি ${1:key} মধ্যে ${2:object}) {", "  ${0}", "}"],
+    "description": "For..in over keys (Bangla)"
+  },
+  "For..of [Bangla]": {
+    "prefix": ["এর"],
+    "body": ["প্রতি (ধরি ${1:item} এর ${2:iterable}) {", "  ${0}", "}"],
+    "description": "For..of over iterable (Bangla)"
+  },
+  "While [Bangla]": {
+    "prefix": ["যতক্ষণ"],
+    "body": ["যতক্ষণ (${1:শর্ত}) {", "  ${0}", "}"],
+    "description": "While loop (Bangla)"
+  },
+  "Do-While [Bangla]": {
+    "prefix": ["করুন"],
+    "body": ["করুন {", "  ${1}", "} যতক্ষণ (${0:শর্ত});"],
+    "description": "Do-While loop (Bangla)"
+  },
+  "Switch [Bangla]": {
+    "prefix": ["বিকল্প"],
+    "body": [
+      "বিকল্প (${1:expr}) {",
+      "  অবস্থা ${2:value}:",
+      "    ${3:// ...}",
+      "    থামুন;",
+      "  অবস্থা ${4:other}:",
+      "    ${5:// ...}",
+      "    থামুন;",
+      "  অন্যথায়:",
+      "    ${0}",
+      "}"
+    ],
+    "description": "Switch / case / default (Bangla)"
+  },
+  "Break [Bangla]": {
+    "prefix": ["থামুন"],
+    "body": ["থামুন;"],
+    "description": "break statement (Bangla)"
+  },
+  "Continue [Bangla]": {
+    "prefix": ["চলুন"],
+    "body": ["চলুন;"],
+    "description": "continue statement (Bangla)"
+  },
+  "Return [Bangla]": {
+    "prefix": ["ফেরত"],
+    "body": ["ফেরত ${0:value};"],
+    "description": "Return (Bangla)"
+  },
+  "Try-Catch [Bangla]": {
+    "prefix": ["চেষ্টা"],
+    "body": ["চেষ্টা {", "  ${1}", "} ধরুন (${2:error}) {", "  ${0}", "}"],
+    "description": "Try / Catch (Bangla)"
+  },
+  "Try-Catch-Finally [Bangla]": {
+    "prefix": ["চেষ্টা"],
+    "body": ["চেষ্টা {", "  ${1}", "} ধরুন (${2:error}) {", "  ${3}", "} অবশেষে {", "  ${0}", "}"],
+    "description": "Try / Catch / Finally (Bangla)"
+  },
+  "LET [Bangla]": {
+    "prefix": ["ধরি"],
+    "body": ["ধরি ${1:name} = ${0:value};"],
+    "description": "let declaration (Bangla)"
+  },
+  "CONST [Bangla]": {
+    "prefix": ["ধ্রুবক"],
+    "body": ["ধ্রুবক ${1:name} = ${0:value};"],
+    "description": "const declaration (Bangla)"
+  },
+  "VAR [Bangla]": {
+    "prefix": ["চলক"],
+    "body": ["চলক ${1:name} = ${0:value};"],
+    "description": "var declaration (Bangla)"
+  },
+  "Function [Bangla]": {
+    "prefix": ["ফাংশন"],
+    "body": ["ফাংশন ${1:name}(${2:params}) {", "  ${0}", "}"],
+    "description": "Function declaration (Bangla)"
+  },
+  "Async Function [Bangla]": {
+    "prefix": ["অসমলয় ফাংশন"],
+    "body": ["অসমলয় ফাংশন ${1:name}(${2:params}) {", "  ${0}", "}"],
+    "description": "Async function (Bangla)"
+  },
+  "Await [Bangla]": {
+    "prefix": ["অপেক্ষা"],
+    "body": ["ধরি ${1:result} = অপেক্ষা ${0:promise};"],
+    "description": "Await assignment (Bangla)"
+  },
+  "Generator Function [Bangla]": {
+    "prefix": ["ফাংশন*"],
+    "body": ["ফাংশন* ${1:gen}(${2:params}) {", "  উৎপন্ন_করুন ${0:value};", "}"],
+    "description": "Generator function with yield (Bangla)"
+  },
+  "Class [Bangla]": {
+    "prefix": ["শ্রেণী"],
+    "body": ["শ্রেণী ${1:Name} {", "  constructor(${2:args}) {", "    ${0}", "  }", "}"],
+    "description": "Class with constructor (Bangla)"
+  },
+  "Class Extends [Bangla]": {
+    "prefix": ["প্রসারিত"],
+    "body": ["শ্রেণী ${1:Child} প্রসারিত ${2:Parent} {", "  constructor(...args) {", "    অভিভাবক(...args);", "  }", "}"],
+    "description": "Class extends / super call (Bangla)"
+  },
+  "New [Bangla]": {
+    "prefix": ["নতুন"],
+    "body": ["নতুন ${1:Class}(${0:args})"],
+    "description": "Instantiate (Bangla)"
+  },
+  "Typeof [Bangla]": {
+    "prefix": ["ধরন"],
+    "body": ["ধরন ${0:expr}"],
+    "description": "typeof operator (Bangla)"
+  },
+  "Instanceof [Bangla]": {
+    "prefix": ["উদাহরণ_হিসেবে"],
+    "body": ["${1:left} উদাহরণ_হিসেবে ${0:right}"],
+    "description": "instanceof operator (Bangla)"
+  },
+  "In [Bangla]": {
+    "prefix": ["মধ্যে"],
+    "body": ["${1:left} মধ্যে ${0:right}"],
+    "description": "in operator (Bangla)"
+  },
+  "Of [Bangla]": {
+    "prefix": ["এর"],
+    "body": ["${1:left} এর ${0:right}"],
+    "description": "of operator (Bangla)"
+  },
+  "Void [Bangla]": {
+    "prefix": ["ফাঁকা"],
+    "body": ["ফাঁকা ${0:expr}"],
+    "description": "void operator (Bangla)"
+  },
+  "Delete [Bangla]": {
+    "prefix": ["মুছুন"],
+    "body": ["মুছুন ${0:expr}"],
+    "description": "delete operator (Bangla)"
+  },
+  "This [Bangla]": {
+    "prefix": ["এটি"],
+    "body": ["এটি.${0:prop}"],
+    "description": "this access (Bangla)"
+  },
+  "With [Bangla]": {
+    "prefix": ["সাথে"],
+    "body": ["সাথে (${1:obj}) {", "  ${0}", "}"],
+    "description": "with statement (Bangla)"
+  },
+  "Debugger [Bangla]": {
+    "prefix": ["ডিবাগার"],
+    "body": ["ডিবাগার;"],
+    "description": "Debugger statement (Bangla)"
+  },
+
+  "If [Banglish]": {
+    "prefix": ["jodi"],
+    "body": ["jodi (${1:শর্ত}) {", "  ${0}", "}"],
+    "description": "If block (Banglish)"
+  },
+  "If-Else [Banglish]": {
+    "prefix": ["jodi"],
+    "body": ["jodi (${1:শর্ত}) {", "  ${2}", "} nahole {", "  ${0}", "}"],
+    "description": "If-Else block (Banglish)"
+  },
+  "For [Banglish]": {
+    "prefix": ["proti"],
+    "body": ["proti (dhori ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++) {", "  ${0}", "}"],
+    "description": "For loop (Banglish)"
+  },
+  "For..in [Banglish]": {
+    "prefix": ["modhye"],
+    "body": ["proti (dhori ${1:key} modhye ${2:object}) {", "  ${0}", "}"],
+    "description": "For..in over keys (Banglish)"
+  },
+  "For..of [Banglish]": {
+    "prefix": ["er"],
+    "body": ["proti (dhori ${1:item} er ${2:iterable}) {", "  ${0}", "}"],
+    "description": "For..of over iterable (Banglish)"
+  },
+  "While [Banglish]": {
+    "prefix": ["jotokkhon"],
+    "body": ["jotokkhon (${1:শর্ত}) {", "  ${0}", "}"],
+    "description": "While loop (Banglish)"
+  },
+  "Do-While [Banglish]": {
+    "prefix": ["korun"],
+    "body": ["korun {", "  ${1}", "} jotokkhon (${0:শর্ত});"],
+    "description": "Do-While loop (Banglish)"
+  },
+  "Switch [Banglish]": {
+    "prefix": ["bikolpo"],
+    "body": [
+      "bikolpo (${1:expr}) {",
+      "  obostha ${2:value}:",
+      "    ${3:// ...}",
+      "    thamun;",
+      "  obostha ${4:other}:",
+      "    ${5:// ...}",
+      "    thamun;",
+      "  onnothay:",
+      "    ${0}",
+      "}"
+    ],
+    "description": "Switch / case / default (Banglish)"
+  },
+  "Break [Banglish]": {
+    "prefix": ["thamun"],
+    "body": ["thamun;"],
+    "description": "break statement (Banglish)"
+  },
+  "Continue [Banglish]": {
+    "prefix": ["colun"],
+    "body": ["colun;"],
+    "description": "continue statement (Banglish)"
+  },
+  "Return [Banglish]": {
+    "prefix": ["ferot"],
+    "body": ["ferot ${0:value};"],
+    "description": "Return (Banglish)"
+  },
+  "Try-Catch [Banglish]": {
+    "prefix": ["ceshta"],
+    "body": ["ceshta {", "  ${1}", "} dhorun (${2:error}) {", "  ${0}", "}"],
+    "description": "Try / Catch (Banglish)"
+  },
+  "Try-Catch-Finally [Banglish]": {
+    "prefix": ["ceshta"],
+    "body": ["ceshta {", "  ${1}", "} dhorun (${2:error}) {", "  ${3}", "} obosheshe {", "  ${0}", "}"],
+    "description": "Try / Catch / Finally (Banglish)"
+  },
+  "LET [Banglish]": {
+    "prefix": ["dhori"],
+    "body": ["dhori ${1:name} = ${0:value};"],
+    "description": "let declaration (Banglish)"
+  },
+  "CONST [Banglish]": {
+    "prefix": ["dhrubok"],
+    "body": ["dhrubok ${1:name} = ${0:value};"],
+    "description": "const declaration (Banglish)"
+  },
+  "VAR [Banglish]": {
+    "prefix": ["cholok"],
+    "body": ["cholok ${1:name} = ${0:value};"],
+    "description": "var declaration (Banglish)"
+  },
+  "Await [Banglish]": {
+    "prefix": ["opekkha"],
+    "body": ["dhori ${1:result} = opekkha ${0:promise};"],
+    "description": "Await assignment (Banglish)"
+  },
+  "Generator Function [Banglish]": {
+    "prefix": ["function*"],
+    "body": ["function* ${1:gen}(${2:params}) {", "  utponno_korun ${0:value};", "}"],
+    "description": "Generator function with yield (Banglish)"
+  },
+  "Class [Banglish]": {
+    "prefix": ["shreni"],
+    "body": ["shreni ${1:Name} {", "  constructor(${2:args}) {", "    ${0}", "  }", "}"],
+    "description": "Class with constructor (Banglish)"
+  },
+  "Class Extends [Banglish]": {
+    "prefix": ["prosarito"],
+    "body": ["shreni ${1:Child} prosarito ${2:Parent} {", "  constructor(...args) {", "    obhibhabok(...args);", "  }", "}"],
+    "description": "Class extends / super call (Banglish)"
+  },
+  "New [Banglish]": {
+    "prefix": ["notun"],
+    "body": ["notun ${1:Class}(${0:args})"],
+    "description": "Instantiate (Banglish)"
+  },
+  "Typeof [Banglish]": {
+    "prefix": ["dhoron"],
+    "body": ["dhoron ${0:expr}"],
+    "description": "typeof operator (Banglish)"
+  },
+  "Instanceof [Banglish]": {
+    "prefix": ["udahoron_hisebe"],
+    "body": ["${1:left} udahoron_hisebe ${0:right}"],
+    "description": "instanceof operator (Banglish)"
+  },
+  "In [Banglish]": {
+    "prefix": ["modhye"],
+    "body": ["${1:left} modhye ${0:right}"],
+    "description": "in operator (Banglish)"
+  },
+  "Of [Banglish]": {
+    "prefix": ["er"],
+    "body": ["${1:left} er ${0:right}"],
+    "description": "of operator (Banglish)"
+  },
+  "Void [Banglish]": {
+    "prefix": ["faka"],
+    "body": ["faka ${0:expr}"],
+    "description": "void operator (Banglish)"
+  },
+  "Delete [Banglish]": {
+    "prefix": ["muchun"],
+    "body": ["muchun ${0:expr}"],
+    "description": "delete operator (Banglish)"
+  },
+  "This [Banglish]": {
+    "prefix": ["eti"],
+    "body": ["eti.${0:prop}"],
+    "description": "this access (Banglish)"
+  },
+  "With [Banglish]": {
+    "prefix": ["sathe"],
+    "body": ["sathe (${1:obj}) {", "  ${0}", "}"],
+    "description": "with statement (Banglish)"
+  },
+  "Debugger [Banglish]": {
+    "prefix": ["dibagar"],
+    "body": ["dibagar;"],
+    "description": "Debugger statement (Banglish)"
+  },
+
+  "If [English]": {
+    "prefix": ["if"],
+    "body": ["if (${1:শর্ত}) {", "  ${0}", "}"],
+    "description": "If block (English)"
+  },
+  "If-Else [English]": {
+    "prefix": ["if"],
+    "body": ["if (${1:শর্ত}) {", "  ${2}", "} else {", "  ${0}", "}"],
+    "description": "If-Else block (English)"
+  },
+  "For [English]": {
+    "prefix": ["for"],
+    "body": ["for (let ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++) {", "  ${0}", "}"],
+    "description": "For loop (English)"
+  },
+  "For..in [English]": {
+    "prefix": ["for-in"],
+    "body": ["for (let ${1:key} in ${2:object}) {", "  ${0}", "}"],
+    "description": "For..in over keys (English)"
+  },
+  "For..of [English]": {
+    "prefix": ["for-of"],
+    "body": ["for (let ${1:item} of ${2:iterable}) {", "  ${0}", "}"],
+    "description": "For..of over iterable (English)"
+  },
+  "While [English]": {
+    "prefix": ["while"],
+    "body": ["while (${1:শর্ত}) {", "  ${0}", "}"],
+    "description": "While loop (English)"
+  },
+  "Do-While [English]": {
+    "prefix": ["do"],
+    "body": ["do {", "  ${1}", "} while (${0:শর্ত});"],
+    "description": "Do-While loop (English)"
+  },
+  "Switch [English]": {
+    "prefix": ["switch"],
+    "body": [
+      "switch (${1:expr}) {",
+      "  case ${2:value}:",
+      "    ${3:// ...}",
+      "    break;",
+      "  case ${4:other}:",
+      "    ${5:// ...}",
+      "    break;",
+      "  default:",
+      "    ${0}",
+      "}"
+    ],
+    "description": "Switch / case / default (English)"
+  },
+  "Break [English]": {
+    "prefix": ["break"],
+    "body": ["break;"],
+    "description": "break statement (English)"
+  },
+  "Continue [English]": {
+    "prefix": ["continue"],
+    "body": ["continue;"],
+    "description": "continue statement (English)"
+  },
+  "Return [English]": {
+    "prefix": ["return"],
+    "body": ["return ${0:value};"],
+    "description": "Return (English)"
+  },
+  "Try-Catch [English]": {
+    "prefix": ["try"],
+    "body": ["try {", "  ${1}", "} catch (${2:error}) {", "  ${0}", "}"],
+    "description": "Try / Catch (English)"
+  },
+  "Try-Catch-Finally [English]": {
+    "prefix": ["try"],
+    "body": ["try {", "  ${1}", "} catch (${2:error}) {", "  ${3}", "} finally {", "  ${0}", "}"],
+    "description": "Try / Catch / Finally (English)"
+  },
+  "LET [English]": {
+    "prefix": ["let"],
+    "body": ["let ${1:name} = ${0:value};"],
+    "description": "let declaration (English)"
+  },
+  "CONST [English]": {
+    "prefix": ["const"],
+    "body": ["const ${1:name} = ${0:value};"],
+    "description": "const declaration (English)"
+  },
+  "VAR [English]": {
+    "prefix": ["var"],
+    "body": ["var ${1:name} = ${0:value};"],
+    "description": "var declaration (English)"
+  },
+  "Function [English]": {
+    "prefix": ["function"],
+    "body": ["function ${1:name}(${2:params}) {", "  ${0}", "}"],
+    "description": "Function declaration (English)"
+  },
+  "Async Function [English]": {
+    "prefix": ["async function"],
+    "body": ["async function ${1:name}(${2:params}) {", "  ${0}", "}"],
+    "description": "Async function (English)"
+  },
+  "Await [English]": {
+    "prefix": ["await"],
+    "body": ["let ${1:result} = await ${0:promise};"],
+    "description": "Await assignment (English)"
+  },
+  "Generator Function [English]": {
+    "prefix": ["function*"],
+    "body": ["function* ${1:gen}(${2:params}) {", "  yield ${0:value};", "}"],
+    "description": "Generator function with yield (English)"
+  },
+  "Class [English]": {
+    "prefix": ["class"],
+    "body": ["class ${1:Name} {", "  constructor(${2:args}) {", "    ${0}", "  }", "}"],
+    "description": "Class with constructor (English)"
+  },
+  "Class Extends [English]": {
+    "prefix": ["extends"],
+    "body": ["class ${1:Child} extends ${2:Parent} {", "  constructor(...args) {", "    super(...args);", "  }", "}"],
+    "description": "Class extends / super call (English)"
+  },
+  "New [English]": {
+    "prefix": ["new"],
+    "body": ["new ${1:Class}(${0:args})"],
+    "description": "Instantiate (English)"
+  },
+  "Typeof [English]": {
+    "prefix": ["typeof"],
+    "body": ["typeof ${0:expr}"],
+    "description": "typeof operator (English)"
+  },
+  "Instanceof [English]": {
+    "prefix": ["instanceof"],
+    "body": ["${1:left} instanceof ${0:right}"],
+    "description": "instanceof operator (English)"
+  },
+  "In [English]": {
+    "prefix": ["in"],
+    "body": ["${1:left} in ${0:right}"],
+    "description": "in operator (English)"
+  },
+  "Of [English]": {
+    "prefix": ["of"],
+    "body": ["${1:left} of ${0:right}"],
+    "description": "of operator (English)"
+  },
+  "Void [English]": {
+    "prefix": ["void"],
+    "body": ["void ${0:expr}"],
+    "description": "void operator (English)"
+  },
+  "Delete [English]": {
+    "prefix": ["delete"],
+    "body": ["delete ${0:expr}"],
+    "description": "delete operator (English)"
+  },
+  "This [English]": {
+    "prefix": ["this"],
+    "body": ["this.${0:prop}"],
+    "description": "this access (English)"
+  },
+  "With [English]": {
+    "prefix": ["with"],
+    "body": ["with (${1:obj}) {", "  ${0}", "}"],
+    "description": "with statement (English)"
+  },
+  "Debugger [English]": {
+    "prefix": ["debugger"],
+    "body": ["debugger;"],
+    "description": "Debugger statement (English)"
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "name": "bnl-vscode",
+  "displayName": "Bangla Programming Language (Bnlang)",
+  "description": "Syntax highlighting, completions, in-file suggestions, and formatting for the Bangla Programming Language (Bnlang).",
+  "author": "Bnlang | Mamun",
+  "license": "MIT",
+  "version": "1.0.0",
+  "publisher": "bnlang",
+  "keywords": [
+    "bnl",
+    "bangla",
+    "bangla programming language",
+    "bangla programming",
+    "bnlang",
+    "bnl language",
+    "bnl formatter",
+    "bnl snippets",
+    "bnl extension"
+  ],
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters",
+    "Snippets"
+  ],
+  "activationEvents": [
+    "onLanguage:bnl",
+    "onCommand:bnl.formatDocument"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bnlang/bnl-vscode.git"
+  },
+  "icon": "images/favicon-128X128.png",
+  "main": "./out/extension.js",
+  "contributes": {
+    "configurationDefaults": {
+      "[bnl]": {
+        "editor.defaultFormatter": "bnlang.bnl-vscode",
+        "editor.formatOnSave": false,
+        "prettier.disableLanguages": ["bnl"]
+      }
+    },
+    "languages": [
+      {
+        "id": "bnl",
+        "aliases": [
+          "BNL",
+          "bnl"
+        ],
+        "extensions": [
+          ".bnl"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "images/favicon-16X16.png",
+          "dark": "images/favicon-16X16.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "bnl",
+        "scopeName": "source.bnl",
+        "path": "./syntaxes/bnl-language.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "bnl",
+        "path": "./snippets/bnl.code-snippets.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "bnl.formatDocument",
+        "title": "BNL: Format Document"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.6.2",
+    "@vscode/vsce": "^3.0.0"
+  },
+  "files": [
+    "out/**",
+    "syntaxes/**",
+    "snippets/**",
+    "images/**",
+    "language-configuration.json",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ]
+}
