@@ -15,8 +15,8 @@ webpack.config.js
 .eslintrc.json
 .prettierrc
 .prettierignore
-*.map
-*.ts
+**/*.map
+**/*.ts
 
 # Test files
 **/*.test.*
