@@ -1,4 +1,4 @@
-# bnl for VS Code
+# Bnlang (bnl) for VS Code
 
 Syntax highlighting, snippets, and completions for the Bangla Programming Language [Bnlang](https://github.com/bnlang).
 
