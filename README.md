@@ -1,6 +1,6 @@
 # bnl for VS Code
 
-Syntax highlighting, snippets, and completions for the [bnl](https://github.com/bnlang) programming language.
+Syntax highlighting, snippets, and completions for the Bangla Programming Language [Bnlang](https://github.com/bnlang).
 
 ## Features
 
@@ -26,9 +26,7 @@ Syntax highlighting, snippets, and completions for the [bnl](https://github.com/
 | Return            | `return`/`ফেরত` |
 | Globals           | `print`/`লিখুন`, `str`, `type`/`ধরণ`, `to_number`, `chr`, `try_call` |
 
-The grammar mirrors the actual lexer keyword table at `src/frontend/lexer.cpp` in the bnl repo. Tokens that aren't part of the language (`let`, `const`, `do`, `async`/`await`, `yield`, `typeof`, `instanceof`, `in`, `delete`, `void`, `new`, `this`, `with`, `debugger`, `static`, regex literals, template literals, single-quoted strings, `===`/`!==`/`&&`/`||`/`!`, `++`/`--`, compound assignment, …) are intentionally not recognized.
-
-`switch` in bnl is **no-fall-through**: each `case` block runs and then control exits the switch. Use stacked `case x: case y:` before a block for multi-value matching.
+The grammar mirrors the actual lexer keyword table at `src/frontend/lexer.cpp` in the bnl repo.
 
 ## Install
 
@@ -49,7 +47,7 @@ code --install-extension bnl-vscode-1.0.0.vsix
 
 - No semantic indexer — completions are textual / receiver-pattern based, not driven by the bnl runtime's symbol table.
 - Brace-based formatter only (indent + trailing-whitespace strip). No parenthesis-aligned wrapping yet.
-- Receiver-aware completions cover `sys`, `io`, `timers`; other stdlib modules complete by name on `import` only.
+- Receiver-aware completions cover `sys`, `io`, `time`; other stdlib modules complete by name on `import` only.
 
 ## License
 
