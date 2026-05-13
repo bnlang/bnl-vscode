@@ -94,7 +94,7 @@
     },
     "Import (built-in)": {
         "prefix": ["import-builtin"],
-        "body": ["import \"${1|sys,io,path,time,timers,async,log,json,crypto,regex,math,random,uuid,csv,dotenv,cli,web,request,ws,template,cookie,session,multipart,net,dns,tls,url,zlib,sqlite,pg,mysql,mongo,exec,test|}\" as ${1};"],
+        "body": ["import \"${1|sys,io,path,time,timers,log,json,crypto,regex,math,random,uuid,csv,dotenv,cli,web,request,ws,template,cookie,session,multipart,net,dns,tls,url,zlib,sqlite,pg,mysql,mongo,exec,test|}\" as ${1};"],
         "description": "import a standard-library module"
     },
     "Import (dep)": {
@@ -144,6 +144,50 @@
         "prefix": ["print"],
         "body": ["print(${0});"],
         "description": "print to stdout (newline appended)"
+    },
+    "Wait": {
+        "prefix": ["wait"],
+        "body": ["wait ${0:future_expr}"],
+        "description": "wait on a Future inside an async function — suspends until it settles"
+    },
+    "Future executor": {
+        "prefix": ["future", "Future"],
+        "body": [
+            "Future(function (resolve, reject) {",
+            "    ${0}",
+            "})"
+        ],
+        "description": "construct a new Future from an (resolve, reject) executor"
+    },
+    "Future.of (resolved)": {
+        "prefix": ["future-of", "Future.of"],
+        "body": ["Future.of(${0:value})"],
+        "description": "an already-fulfilled Future"
+    },
+    "Future.err (rejected)": {
+        "prefix": ["future-err", "Future.err"],
+        "body": ["Future.err(${0:reason})"],
+        "description": "an already-rejected Future"
+    },
+    "Future.all": {
+        "prefix": ["future-all", "Future.all"],
+        "body": ["Future.all([${0}])"],
+        "description": "wait for every Future to fulfill, or reject on the first failure"
+    },
+    "Futurify a callback fn": {
+        "prefix": ["futurify"],
+        "body": ["var ${1:wrapped} = futurify(${0:callback_style_fn});"],
+        "description": "convert a callback-style function (last arg = (err, result) cb) into one that returns a Future"
+    },
+    "Async function skeleton": {
+        "prefix": ["fn-async", "async-fn"],
+        "body": [
+            "function ${1:name}(${2:params}) {",
+            "    var ${3:result} = wait ${4:future_expr};",
+            "    return ${0:result};",
+            "}"
+        ],
+        "description": "function containing a wait — caller gets back a Future"
     },
     "List literal": {
         "prefix": ["list"],
@@ -258,5 +302,10 @@
         "prefix": ["আমদানি"],
         "body": ["আমদানি \"${1:path}\" যেমন ${0:নাম};"],
         "description": "import (Bangla)"
+    },
+    "অপেক্ষা (Bangla)": {
+        "prefix": ["অপেক্ষা"],
+        "body": ["অপেক্ষা ${0:future_expr}"],
+        "description": "wait (Bangla)"
     }
 }

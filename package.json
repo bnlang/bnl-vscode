@@ -4,7 +4,7 @@
   "description": "Syntax highlighting, completions, in-file suggestions, and formatting for the Bangla Programming Language (Bnlang).",
   "author": "Bnlang | Mamun",
   "license": "MIT",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "publisher": "bnlang",
   "keywords": [
     "bnl",
