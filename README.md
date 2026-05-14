@@ -90,10 +90,10 @@ Aliases are mirrored from `src/runtime/bn_aliases.h` in the bnl repo.
 | Control flow      | `if`/`যদি`, `else`/`নাহলে`, `while`/`যতক্ষণ`, `for`/`প্রতি`, `of`/`এর` |
 | Switch            | `switch`/`বিকল্প`, `case`/`অবস্থা`, `default`/`অন্যথায়` |
 | Loop / switch flow| `break`/`থামুন`, `continue`/`চলুন` |
-| Definitions       | `var`/`চলক`, `function`/`ফাংশন`, `class`/`শ্রেণী`, `extends`/`প্রসারিত`, `super`/`উপরের` |
+| Definitions       | `var`/`চলক`/`ধরি`, `function`/`ফাংশন`, `class`/`শ্রেণী`, `extends`/`প্রসারিত`, `super`/`উপরের` |
 | Modules           | `import`/`আমদানি`, `as`/`যেমন` |
 | Logical (word)    | `and`/`এবং`, `or`/`অথবা`, `not`/`না` |
-| Constants         | `true`/`সত্য`, `false`/`মিথ্যা`, `null`/`নাই` |
+| Constants         | `true`/`সত্য`, `false`/`মিথ্যা`, `null`/`নাই`/`নাল` |
 | Errors            | `try`/`চেষ্টা`, `catch`/`ধরুন`, `throw`/`নিক্ষেপ`, `finally`/`অবশেষে` |
 | Return            | `return`/`ফেরত` |
 | Globals           | `print`/`লিখুন`, `str`, `type`/`ধরণ`, `to_number`, `chr`, `try_call` |
@@ -107,8 +107,9 @@ Every Bangla keyword and module-name alias has a roman phonetic spelling that su
 ```
 jodi       → যদি           nahole     → নাহলে        ferot      → ফেরত
 fangshon   → ফাংশন         cholok     → চলক          jotokkhon  → যতক্ষণ
-amdani     → আমদানি        jemon      → যেমন         ebong      → এবং
-sotto      → সত্য           mittha     → মিথ্যা        nai        → নাই
+dhori      → ধরি            amdani     → আমদানি       jemon      → যেমন
+ebong      → এবং            sotto      → সত্য          mittha     → মিথ্যা
+nai        → নাই            nal        → নাল
 likhun     → লিখুন          dhoron     → ধরণ
 
 fail/file  → ফাইল           sistem     → সিস্টেম      taimar     → টাইমার
@@ -132,7 +133,7 @@ Or build from source:
 npm install
 npm run compile
 npm run package
-code --install-extension bnl-vscode-2.2.0.vsix
+code --install-extension bnl-vscode-2.2.1.vsix
 ```
 
 ## Known gaps
