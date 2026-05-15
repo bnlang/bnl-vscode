@@ -132,7 +132,7 @@ Or build from source:
 npm install
 npm run compile
 npm run package
-code --install-extension bnl-vscode-2.2.1.vsix
+code --install-extension bnl-vscode-2.2.2.vsix
 ```
 
 ## Known gaps
