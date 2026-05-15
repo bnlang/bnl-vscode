@@ -68,7 +68,7 @@ function collectImportAliases(doc: vscode.TextDocument): Map<string, string> {
 
 const RECEIVER_MODULES = [
     "sys", "io", "timers", "time", "url", "path", "math", "json", "log",
-    "exec", "web", "mysql", "pg", "sqlite", "mongo", "request",
+    "exec", "web", "pg", "sqlite", "mongo", "request",
     "random", "uuid", "crypto", "csv", "cookie", "session", "ws", "test",
     "net", "http", "tls", "regex", "zlib", "dns", "template", "multipart",
     "dotenv", "cli",

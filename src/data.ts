@@ -96,7 +96,6 @@ export const PHONETIC_ALIASES: Record<string, string[]> = {
     "সংকোচন":      ["shongkochon", "zlib"],
     "এসকিউলাইট":    ["sqlite"],
     "পোস্টগ্রেস":    ["pg", "postgres"],
-    "মাইএসকিউএল":   ["mysql"],
     "মঙ্গো":        ["mongo"],
     "চালান":        ["chalan", "exec"],
     "ডিএনএস":       ["dns"],
@@ -133,11 +132,39 @@ const fn = (name: string, detail: string, doc?: string, snippet?: string): Membe
 
 export const MODULES: Record<string, Member[]> = {
     sys: [
-        fn("platform", "sys.platform: string", "OS identifier: 'windows' | 'linux' | 'darwin' | ..."),
-        fn("argc",     "sys.argc() -> number",       "Number of script args."),
-        fn("arg",      "sys.arg(i) -> string|null",  "i-th script arg, or null if out of range.", "arg(${1:i})"),
-        fn("env",      "sys.env(name) -> string|null", "Env var, or null if unset.",              "env(${1:\"NAME\"})"),
-        fn("exit",     "sys.exit(code) -> never",    "Terminate with the given exit code.",      "exit(${1:0})"),
+        // Constants
+        fn("platform",   "sys.platform: string",            "OS identifier: 'windows' | 'linux' | 'darwin' | ..."),
+        fn("version",    "sys.version: string",             "bnl interpreter version string."),
+        fn("arch",       "sys.arch: string",                "CPU architecture: 'x86_64' | 'arm64' | 'x86' | 'arm' | 'unknown'."),
+
+        // CLI args
+        fn("argc",       "sys.argc() -> number",            "Count of args passed after the script path.",                                  "argc()"),
+        fn("arg",        "sys.arg(i) -> string|null",       "i-th script arg (0-indexed), or null if out of range.",                       "arg(${1:i})"),
+        fn("argv",       "sys.argv() -> list",              "All CLI args as a list of strings.",                                          "argv()"),
+
+        // Environment variables
+        fn("env",        "sys.env(name) -> string|null",    "Env var value, or null if unset.",                                            "env(${1:\"NAME\"})"),
+        fn("setenv",     "sys.setenv(name, value) -> null", "Set or overwrite an env var.",                                                "setenv(${1:\"NAME\"}, ${2:\"value\"})"),
+        fn("unsetenv",   "sys.unsetenv(name) -> null",      "Remove an env var. No-op if not set.",                                        "unsetenv(${1:\"NAME\"})"),
+        fn("envs",       "sys.envs() -> map",               "Every env var as a {name: value} map.",                                       "envs()"),
+
+        // Process control
+        fn("exit",       "sys.exit(code) -> never",         "Terminate with the given exit code.",                                         "exit(${1:0})"),
+        fn("abort",      "sys.abort() -> never",            "Abnormal termination — no atexit handlers, dumps core on Unix.",              "abort()"),
+
+        // Process info
+        fn("pid",        "sys.pid() -> number",             "Current process id.",                                                         "pid()"),
+        fn("cpu_count",  "sys.cpu_count() -> number",       "Number of logical CPUs, or 0 if unknown.",                                    "cpu_count()"),
+        fn("hostname",   "sys.hostname() -> string",        "Machine hostname.",                                                           "hostname()"),
+        fn("username",   "sys.username() -> string|null",   "Current user name, or null if unknown.",                                      "username()"),
+        fn("home",       "sys.home() -> string|null",       "User home directory, or null if not derivable from env.",                     "home()"),
+        fn("executable", "sys.executable() -> string",      "Full path to the running bnl interpreter binary.",                            "executable()"),
+        fn("script",     "sys.script() -> string|null",     "Path of the entry .bnl script, or null for REPL / -e inline code.",           "script()"),
+
+        // Paths
+        fn("cwd",        "sys.cwd() -> string",             "Current working directory.",                                                  "cwd()"),
+        fn("chdir",      "sys.chdir(path) -> null",         "Change the working directory.",                                               "chdir(${1:path})"),
+        fn("tempdir",    "sys.tempdir() -> string",         "OS temp directory.",                                                          "tempdir()"),
     ],
 
     io: [
@@ -642,33 +669,6 @@ export const MODULES: Record<string, Member[]> = {
         fn("shutdown", "request.shutdown() -> null", "Close every connection in the keep-alive pool. Call before exit.", "shutdown()"),
     ],
 
-    mysql: [
-        fn("version",
-           "mysql.version() -> string",
-           "Underlying MySQL client library version.",
-           "version()"),
-        fn("connect",
-           "mysql.connect(url_or_opts) -> db",
-           "Open a MySQL connection. Pass either a `mysql://user:pass@host:port/db?...` URL string or an options map.",
-           "connect(${1:url_or_opts})"),
-        fn("parse_url",
-           "mysql.parse_url(url) -> map",
-           "Parse a `mysql://...` URL into the options map accepted by `connect`.",
-           "parse_url(${1:url})"),
-        fn("transaction",
-           "mysql.transaction(db, fn) -> any",
-           "Run `fn(db)` inside BEGIN/COMMIT. Rolls back and re-throws if `fn` throws.",
-           "transaction(${1:db}, function (db) { ${0} })"),
-        fn("migrate",
-           "mysql.migrate(db, statements) -> number",
-           "Execute a list of SQL statements inside a single transaction. Returns the count.",
-           "migrate(${1:db}, ${2:statements})"),
-        fn("insert",
-           "mysql.insert(db, table, row) -> number",
-           "Convenience INSERT from a row map. Returns the last insert id.",
-           "insert(${1:db}, ${2:table}, ${3:row})"),
-    ],
-
     web: [
         // tunables
         fn("DEFAULT_IDLE_TIMEOUT_MS", "web.DEFAULT_IDLE_TIMEOUT_MS: number = 30000",
@@ -740,7 +740,6 @@ export const BUILTIN_IMPORTS: Record<string, BuiltinImport> = {
     zlib:      { alias: "সংকোচন",   phonetic: ["shongkochon", "zlib"],  doc: "Compression and decompression." },
     sqlite:    { alias: "এসকিউলাইট", phonetic: ["sqlite"],               doc: "SQLite database." },
     pg:        { alias: "পোস্টগ্রেস", phonetic: ["pg", "postgres"],       doc: "PostgreSQL client." },
-    mysql:     { alias: "মাইএসকিউএল", phonetic: ["mysql"],                doc: "MySQL client." },
     mongo:     { alias: "মঙ্গো",     phonetic: ["mongo"],                doc: "MongoDB client." },
     exec:      { alias: "চালান",     phonetic: ["chalan", "exec"],       doc: "Subprocess execution." },
     dns:       { alias: "ডিএনএস",    phonetic: ["dns"],                  doc: "DNS resolution." },
@@ -810,8 +809,6 @@ export const IMPORT_NAME_TO_CANONICAL: Record<string, string> = {
     "চালান":      "exec",
     "web":        "web",
     "ওয়েব":      "web",
-    "mysql":      "mysql",
-    "মাইএসকিউএল": "mysql",
     "pg":         "pg",
     "পোস্টগ্রেস": "pg",
     "sqlite":     "sqlite",
