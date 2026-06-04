@@ -32,10 +32,10 @@ function greet(name) {
 ## What's new in 2.2.0
 
 - Phonetic typing layer for keywords, Bangla globals, and built-in module aliases (type `jodi` → `যদি`, `gonit` → `গণিত`, etc.).
-- Library suggestions inside `import "..."` for all 33 stdlib modules; both English (`io`) and Bangla (`ফাইল`) forms surface from any matching input.
+- Library suggestions inside `import "..."` for all 30 stdlib modules; both English (`io`) and Bangla (`ফাইল`) forms surface from any matching input.
 - Bangla `import` / `as` keyword recognition — `আমদানি "io" যেমন ফাইল;` is fully equivalent to the English form.
 - Alias-aware receiver completion: after `import "io" as foo;`, typing `foo.` surfaces io's members. Works through any alias spelling and any of the wired modules.
-- Member tables for **every** stdlib module (was 3 → now 33): `sys`, `io`, `timers`, `time`, `url`, `path`, `math`, `json`, `log`, `exec`, `web`, `request`, `pg`, `sqlite`, `mongo`, `random`, `uuid`, `crypto`, `csv`, `cookie`, `session`, `ws`, `test`, `net`, `http`, `tls`, `regex`, `zlib`, `dns`, `template`, `multipart`, `dotenv`, `cli`.
+- Member tables for **every** stdlib module (30 total): `sys`, `io`, `timers`, `time`, `url`, `path`, `math`, `json`, `log`, `exec`, `web`, `request`, `random`, `uuid`, `crypto`, `csv`, `cookie`, `session`, `ws`, `test`, `net`, `http`, `tls`, `regex`, `zlib`, `dns`, `template`, `multipart`, `dotenv`, `cli`. Database clients (`sqlite`, `pg`, `mongo`, `mysql`) live in bpm packages and aren't wired into completion yet.
 - Source split across `data.ts`, `completion.ts`, `hover.ts`, `formatter.ts`, `extension.ts` — internal only, no behavior change.
 
 See [CHANGELOG.md](./CHANGELOG.md) for the full history.
@@ -58,9 +58,6 @@ All 34 modules surface in `import "..."` suggestions; the ones marked **(members
 | `exec` | `চালান` | ✓ |
 | `web` | `ওয়েব` | ✓ |
 | `request` | `অনুরোধ` | ✓ |
-| `pg` | `পোস্টগ্রেস` | ✓ |
-| `sqlite` | `এসকিউলাইট` | ✓ |
-| `mongo` | `মঙ্গো` | ✓ |
 | `random` | `এলোমেলো` | ✓ |
 | `uuid` | `ইউইউআইডি` | ✓ |
 | `crypto` | `ক্রিপ্টো` | ✓ |
@@ -132,12 +129,12 @@ Or build from source:
 npm install
 npm run compile
 npm run package
-code --install-extension bnl-vscode-2.2.2.vsix
+code --install-extension bnl-vscode-2.3.0.vsix
 ```
 
 ## Known gaps
 
-- **No chained / instance member completion.** Returned objects (e.g., `pg.connect(...)` → `db`, `web.app()` → app) have their own methods (`db.exec(...)`, `app.get(...)`, etc.) that completion does **not** surface — `detectReceiver` matches by identifier name, not by inferred type. The top-level module functions complete; what's chained off their return values does not.
+- **No chained / instance member completion.** Returned objects (e.g., `web.app()` → app, `request.create(...)` → client) have their own methods (`app.get(...)`, `client.get(...)`, etc.) that completion does **not** surface — `detectReceiver` matches by identifier name, not by inferred type. The top-level module functions complete; what's chained off their return values does not.
 - **No semantic indexer.** Completions are textual / receiver-pattern based, not driven by the bnl runtime's symbol table.
 - **Brace-based formatter only** — indent + trailing-whitespace strip; no parenthesis-aligned wrapping.
 

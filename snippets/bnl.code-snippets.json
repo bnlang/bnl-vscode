@@ -94,7 +94,7 @@
     },
     "Import (built-in)": {
         "prefix": ["import-builtin"],
-        "body": ["import \"${1|sys,io,path,time,timers,log,json,crypto,regex,math,random,uuid,csv,dotenv,cli,web,request,ws,template,cookie,session,multipart,net,dns,tls,url,zlib,sqlite,pg,mongo,exec,test|}\" as ${1};"],
+        "body": ["import \"${1|sys,io,path,time,timers,log,json,crypto,regex,math,random,uuid,csv,dotenv,cli,web,request,ws,template,cookie,session,multipart,net,dns,tls,url,zlib,exec,test|}\" as ${1};"],
         "description": "import a standard-library module"
     },
     "Import (dep)": {
