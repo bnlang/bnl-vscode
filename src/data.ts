@@ -124,8 +124,14 @@ export const GLOBALS: Global[] = [
 
 // module member tables (sys / io / timers)
 
-export type Member = { name: string; detail: string; doc?: string; snippet?: string };
+/**
+ * `returns` names an entry in VALUE_SHAPES: the members carried by the value
+ * this member evaluates to. It is what lets completion follow a call result.
+ */
+export type Member = { name: string; detail: string; doc?: string; snippet?: string; returns?: string };
 const fn = (name: string, detail: string, doc?: string, snippet?: string): Member => ({ name, detail, doc, snippet });
+const rfn = (returns: string, name: string, detail: string, doc?: string, snippet?: string): Member =>
+    ({ name, detail, doc, snippet, returns });
 
 export const MODULES: Record<string, Member[]> = {
     sys: [
@@ -574,7 +580,7 @@ export const MODULES: Record<string, Member[]> = {
     ws: [
         fn("WS_GUID",          "ws.WS_GUID: string",                          "The WebSocket GUID per RFC 6455 (used in the accept-key hash)."),
         fn("validate_request", "ws.validate_request(req) -> bool",            "Whether `req` is a well-formed WebSocket upgrade.",                "validate_request(${1:req})"),
-        fn("accept",
+        rfn("ws_conn", "accept",
            "ws.accept(conn, req) -> ws_conn",
            "Complete the WebSocket handshake on `conn`. Returns an API with `.on_message(fn) / .on_close(fn) / .on_ping(fn)`, `.send(text) / .send_binary(data) / .ping(data) / .close(code, reason)`.",
            "accept(${1:conn}, ${2:req})"),
@@ -605,7 +611,7 @@ export const MODULES: Record<string, Member[]> = {
         fn("after",  "request.after(fn) -> null",  "Register an after-response hook on the default instance. `fn(resp)` may return a modified response.", "after(${1:fn})"),
 
         // instances & pool
-        fn("create",   "request.create(defaults?) -> instance", "Create an isolated instance with its own defaults and hooks (`.get`/`.post`/...).", "create(${1:defaults})"),
+        rfn("request_instance", "create", "request.create(defaults) -> instance", "Create an isolated instance with its own defaults and hooks (`.get`/`.post`/...).", "create(${1:defaults})"),
         fn("shutdown", "request.shutdown() -> null", "Close every connection in the keep-alive pool. Call before exit.", "shutdown()"),
     ],
 
@@ -630,7 +636,7 @@ export const MODULES: Record<string, Member[]> = {
         fn("clear_views_cache", "web.clear_views_cache() -> null",  "Clear the template cache.",                    "clear_views_cache()"),
 
         // request body / upgrade helpers
-        fn("upgrade",    "web.upgrade(req) -> ws_conn",      "Upgrade an HTTP request to a WebSocket; returns the WS connection.", "upgrade(${1:req})"),
+        rfn("ws_conn", "upgrade", "web.upgrade(req) -> ws_conn", "Upgrade an HTTP request to a WebSocket; returns the WS connection.", "upgrade(${1:req})"),
         fn("parse_form", "web.parse_form(req) -> map",       "Parse `req.body` as form-urlencoded.",                                 "parse_form(${1:req})"),
         fn("parse_json", "web.parse_json(req) -> any",       "Parse `req.body` as JSON.",                                            "parse_json(${1:req})"),
 
@@ -645,7 +651,7 @@ export const MODULES: Record<string, Member[]> = {
            "serve_stream(${1:opts}, function (req) { ${0} })"),
 
         // app builder
-        fn("app",
+        rfn("app", "app",
            "web.app() -> app",
            "Returns an app object with `.get/.post/.put/.patch/.delete/.head/.any/.route`, `.before/.after`, `.on_404/.on_error`, `.static`, `.listen`.",
            "app()"),
@@ -721,6 +727,73 @@ export const MAP_INTRINSICS: Member[] = [
     fn("has",   ".has(k) -> bool",     "",                "has(${1:key})"),
     fn("keys",  ".keys() -> list",     "Returns the list of keys.", "keys()"),
 ];
+
+// shapes of values returned by stdlib calls
+//
+// A shape is the member set of a value a known call produces. Members are
+// written with the leading-dot detail style used by the intrinsics tables, so
+// completion can render them against whatever name the user bound the value to.
+// `mapBacked` marks shapes the runtime reports as `map`, which also carry the
+// map intrinsics.
+
+export type ValueShape = { members: Member[]; mapBacked?: boolean };
+
+export const VALUE_SHAPES: Record<string, ValueShape> = {
+    // web.app() — every route/hook method returns the app itself, so chains
+    // like `app.get(...).post(...)` resolve through `returns` as well.
+    app: {
+        mapBacked: true,
+        members: [
+            rfn("app", "get",      ".get(path, handler) -> app",             "Register a GET route.",                                   "get(${1:path}, function (req) { ${0} })"),
+            rfn("app", "post",     ".post(path, handler) -> app",            "Register a POST route.",                                  "post(${1:path}, function (req) { ${0} })"),
+            rfn("app", "put",      ".put(path, handler) -> app",             "Register a PUT route.",                                   "put(${1:path}, function (req) { ${0} })"),
+            rfn("app", "patch",    ".patch(path, handler) -> app",           "Register a PATCH route.",                                 "patch(${1:path}, function (req) { ${0} })"),
+            rfn("app", "delete",   ".delete(path, handler) -> app",          "Register a DELETE route.",                                "delete(${1:path}, function (req) { ${0} })"),
+            rfn("app", "head",     ".head(path, handler) -> app",            "Register a HEAD route.",                                  "head(${1:path}, function (req) { ${0} })"),
+            rfn("app", "any",      ".any(path, handler) -> app",             "Register a route matching any method.",                   "any(${1:path}, function (req) { ${0} })"),
+            rfn("app", "route",    ".route(method, path, handler) -> app",   "Register a route for an explicit method.",                "route(${1:method}, ${2:path}, function (req) { ${0} })"),
+            rfn("app", "before",   ".before(handler) -> app",                "Run `handler(req)` before every route.",                  "before(function (req) { ${0} })"),
+            rfn("app", "after",    ".after(handler) -> app",                 "Run `handler(resp)` after every route.",                  "after(function (resp) { ${0} })"),
+            rfn("app", "on_404",   ".on_404(handler) -> app",                "Response used when no route matches.",                    "on_404(function (req) { ${0} })"),
+            rfn("app", "on_error", ".on_error(handler) -> app",              "Response used when a handler throws.",                    "on_error(function (req) { ${0} })"),
+            rfn("app", "static",   ".static(prefix, dir) -> app",            "Serve files under `dir` at URL `prefix`.",                "static(${1:prefix}, ${2:dir})"),
+            fn("listen",           ".listen(opts) -> null",                  "Start listening. `opts` may contain {port, tls, max_body_size, idle_timeout}.", "listen(${1:opts})"),
+        ],
+    },
+
+    // request.create(defaults) — the isolated instance, minus the module-level
+    // pool controls that do not exist on an instance.
+    request_instance: {
+        mapBacked: true,
+        members: [
+            fn("request",   ".request(config) -> Future<response>",          "Send a request using this instance.",                     "request(${1:config})"),
+            fn("get",       ".get(url, config?) -> Future<response>",        "GET.",                                                    "get(${1:url})"),
+            fn("head",      ".head(url, config?) -> Future<response>",       "HEAD.",                                                   "head(${1:url})"),
+            fn("delete",    ".delete(url, config?) -> Future<response>",     "DELETE.",                                                 "delete(${1:url})"),
+            fn("post",      ".post(url, data, config?) -> Future<response>", "POST.",                                                   "post(${1:url}, ${2:data})"),
+            fn("put",       ".put(url, data, config?) -> Future<response>",  "PUT.",                                                    "put(${1:url}, ${2:data})"),
+            fn("patch",     ".patch(url, data, config?) -> Future<response>","PATCH.",                                                  "patch(${1:url}, ${2:data})"),
+            fn("post_form", ".post_form(url, fields, config?) -> Future<response>", "POST application/x-www-form-urlencoded.",           "post_form(${1:url}, ${2:fields})"),
+            fn("before",    ".before(fn) -> null",                           "Register a before-request hook on this instance.",        "before(${1:fn})"),
+            fn("after",     ".after(fn) -> null",                            "Register an after-response hook on this instance.",       "after(${1:fn})"),
+            fn("defaults",  ".defaults: map",                                "The defaults this instance was created with."),
+        ],
+    },
+
+    // ws.accept(conn, req) / web.upgrade(req) — members as documented on those
+    // two entries in the tables above.
+    ws_conn: {
+        members: [
+            fn("on_message",  ".on_message(fn) -> null",        "Called with each inbound message.",       "on_message(${1:fn})"),
+            fn("on_close",    ".on_close(fn) -> null",          "Called when the peer closes.",            "on_close(${1:fn})"),
+            fn("on_ping",     ".on_ping(fn) -> null",           "Called on an inbound ping.",              "on_ping(${1:fn})"),
+            fn("send",        ".send(text) -> null",            "Send a text frame.",                      "send(${1:text})"),
+            fn("send_binary", ".send_binary(data) -> null",     "Send a binary frame.",                    "send_binary(${1:data})"),
+            fn("ping",        ".ping(data) -> null",            "Send a ping frame.",                      "ping(${1:data})"),
+            fn("close",       ".close(code, reason) -> null",   "Close the connection.",                   "close(${1:code}, ${2:reason})"),
+        ],
+    },
+};
 
 // import name → canonical module key
 export const IMPORT_NAME_TO_CANONICAL: Record<string, string> = {

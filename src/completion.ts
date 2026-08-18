@@ -6,6 +6,8 @@
  * symbol echo.
  */
 
+import * as path from "path";
+
 import * as vscode from "vscode";
 
 import {
@@ -16,11 +18,16 @@ import {
     IMPORT_NAME_TO_CANONICAL,
     KEYWORD_GROUPS,
     LIST_INTRINSICS,
+    MAP_INTRINSICS,
     MODULES,
     Member,
     PHONETIC_ALIASES,
     STRING_INTRINSICS,
+    VALUE_SHAPES,
 } from "./data";
+import { IDENT, maskLiterals } from "./scanner";
+import { buildSymbolTable, collectPackageImports, resolveIdentifier } from "./resolver";
+import { PackageIndex, PackageSymbol } from "./packageIndex";
 
 // helpers
 function makeCompletion(
@@ -55,6 +62,22 @@ function pushMembers(items: vscode.CompletionItem[], members: Member[], prefix: 
     }
 }
 
+/**
+ * Masked document text, memoised per document version. Masking is the only
+ * whole-document work on the completion path, and the document rarely changes
+ * between the keystrokes that trigger member completion.
+ */
+const maskedCache = new WeakMap<vscode.TextDocument, { version: number; masked: string }>();
+
+function maskedTextOf(doc: vscode.TextDocument, text: string): string {
+    const hit = maskedCache.get(doc);
+    if (hit && hit.version === doc.version) return hit.masked;
+
+    const masked = maskLiterals(text);
+    maskedCache.set(doc, { version: doc.version, masked });
+    return masked;
+}
+
 function collectImportAliases(doc: vscode.TextDocument): Map<string, string> {
     const out = new Map<string, string>();
     const re  = /(?:import|আমদানি)\s+"([^"]+)"\s+(?:as|যেমন)\s+([A-Za-z_ঀ-৿][\wঀ-৿]*)/g;
@@ -66,45 +89,37 @@ function collectImportAliases(doc: vscode.TextDocument): Map<string, string> {
     return out;
 }
 
-const RECEIVER_MODULES = [
-    "sys", "io", "timers", "time", "url", "path", "math", "json", "log",
-    "exec", "web", "request",
-    "random", "uuid", "crypto", "csv", "cookie", "session", "ws", "test",
-    "net", "http", "tls", "regex", "zlib", "dns", "template", "multipart",
-    "dotenv", "cli",
-] as const;
-type ReceiverModule = typeof RECEIVER_MODULES[number];
+/**
+ * Receivers recognised from the literal syntax alone. Identifier receivers are
+ * resolved semantically instead — see resolver.ts.
+ */
+type LiteralReceiver = "string" | "list" | null;
 
-type Receiver =
-    | "string"
-    | "list"
-    | "map"
-    | `module:${ReceiverModule}`
-    | null;
-
-function detectReceiver(
-    left: string,
-    aliases: Map<string, string> = new Map(),
-): Receiver {
+function detectLiteralReceiver(left: string): LiteralReceiver {
     if (/(?:"[^"]*")\.\w*$/.test(left)) return "string";
-
-    if (/\][^.]*\.\w*$/.test(left)) {
-        return "list";
-    }
-
-    const id = /([A-Za-z_ঀ-৿][\wঀ-৿]*)\.\w*$/.exec(left)?.[1];
-    if (id) {
-        if ((RECEIVER_MODULES as readonly string[]).includes(id)) {
-            return `module:${id as ReceiverModule}`;
-        }
-        // User-defined alias from an `import "<lib>" as <id>;`.
-        const canonical = aliases.get(id);
-        if (canonical && (RECEIVER_MODULES as readonly string[]).includes(canonical)) {
-            return `module:${canonical as ReceiverModule}`;
-        }
-    }
-
+    if (/\][^.]*\.\w*$/.test(left)) return "list";
     return null;
+}
+
+const RECEIVER_IDENT = new RegExp(`(${IDENT})\\s*\\.\\w*$`);
+
+function detectReceiverIdentifier(left: string): string | null {
+    return RECEIVER_IDENT.exec(left)?.[1] ?? null;
+}
+
+function pushPackageSymbols(items: vscode.CompletionItem[], symbols: PackageSymbol[], alias: string) {
+    for (const s of symbols) {
+        const signature = s.kind === "function" ? `${s.name}(${s.params ?? ""})` : s.name;
+        items.push(makeCompletion(
+            s.name,
+            `${alias}.${signature}`,
+            s.kind === "function" ? vscode.CompletionItemKind.Function
+                : s.kind === "class" ? vscode.CompletionItemKind.Class
+                : vscode.CompletionItemKind.Variable,
+            s.kind === "function" ? `${s.name}(${s.params ? "${0}" : ""})` : s.name,
+            `Declared in \`${s.file}\` at line ${s.line + 1}.`,
+        ));
+    }
 }
 
 function isInsideString(left: string): boolean {
@@ -129,6 +144,16 @@ async function collectInFileWords(doc: vscode.TextDocument): Promise<Set<string>
 
 // provider
 export function registerCompletion(context: vscode.ExtensionContext) {
+    const index = new PackageIndex();
+
+    // Package sources and manifests change rarely, so watching them is far
+    // cheaper than revalidating anything on the completion path.
+    const watcher = vscode.workspace.createFileSystemWatcher("**/{*.bnl,bnl.json}");
+    watcher.onDidChange(uri => index.invalidate(uri.fsPath));
+    watcher.onDidCreate(uri => index.invalidate(uri.fsPath));
+    watcher.onDidDelete(uri => index.invalidate(uri.fsPath));
+    context.subscriptions.push(watcher);
+
     context.subscriptions.push(
         vscode.languages.registerCompletionItemProvider(
             { language: "bnl", scheme: "file" },
@@ -201,14 +226,51 @@ export function registerCompletion(context: vscode.ExtensionContext) {
 
                     if (isInsideString(left)) return items;
 
-                    const importAliases = collectImportAliases(doc);
-                    const receiver = detectReceiver(left, importAliases);
-                    if (receiver === "string") { pushMembers(items, STRING_INTRINSICS, "string"); return items; }
-                    if (receiver === "list")   { pushMembers(items, LIST_INTRINSICS,   "list");   return items; }
-                    if (receiver && receiver.startsWith("module:")) {
-                        const mod = receiver.slice("module:".length);
-                        pushMembers(items, MODULES[mod], `${mod}.`);
-                        return items;
+                    const literal = detectLiteralReceiver(left);
+                    if (literal === "string") { pushMembers(items, STRING_INTRINSICS, "string"); return items; }
+                    if (literal === "list")   { pushMembers(items, LIST_INTRINSICS,   "list");   return items; }
+
+                    // Semantic receiver resolution. Every failure path below
+                    // falls through to the generic completion that follows.
+                    const receiver = detectReceiverIdentifier(left);
+                    if (receiver) {
+                        const text   = doc.getText();
+                        const offset = doc.offsetAt(position);
+                        const masked = maskedTextOf(doc, text);
+
+                        const aliases  = collectImportAliases(doc);
+                        const packages = collectPackageImports(text);
+                        const symbols  = buildSymbolTable(
+                            text.slice(0, offset),
+                            masked.slice(0, offset),
+                        );
+
+                        const ref = resolveIdentifier(receiver, symbols, aliases, packages);
+
+                        if (ref?.kind === "module") {
+                            pushMembers(items, MODULES[ref.name], "");
+                            return items;
+                        }
+
+                        if (ref?.kind === "shape") {
+                            const shape = VALUE_SHAPES[ref.name];
+                            if (shape) {
+                                pushMembers(items, shape.members, receiver);
+                                if (shape.mapBacked) pushMembers(items, MAP_INTRINSICS, receiver);
+                                return items;
+                            }
+                        }
+
+                        if (ref?.kind === "package") {
+                            const found = await index.getSymbols(
+                                path.dirname(doc.uri.fsPath),
+                                ref.name,
+                            );
+                            if (found && found.length > 0) {
+                                pushPackageSymbols(items, found, receiver);
+                                return items;
+                            }
+                        }
                     }
 
                     for (const [eng, variants] of Object.entries(KEYWORD_GROUPS)) {
